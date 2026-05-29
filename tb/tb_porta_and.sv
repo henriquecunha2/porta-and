@@ -24,13 +24,13 @@ module tb_porta_and;
     // Estímulos
     initial begin
         a = 0; b = 0;
-        #10;
+        #10
         a = 0; b = 1;
-        #10;
+        #10
         a = 1; b = 0;
-        #10;
+        #10
         a = 1; b = 1;
-        #10;
+        #10
         $finish;
     end
 

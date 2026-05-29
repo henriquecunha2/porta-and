@@ -1,0 +1,76 @@
+# ============================================================
+# Synopsys Design Compiler Setup
+# SAED32 + SystemVerilog
+# ============================================================
+
+# ------------------------------------------------------------
+# Diretório atual
+# ------------------------------------------------------------
+set ROOT_DIR [pwd]
+
+# ------------------------------------------------------------
+# Search path
+# ------------------------------------------------------------
+set_app_var search_path [list \
+    $ROOT_DIR \
+    $ROOT_DIR/rtl \
+    $ROOT_DIR/libs \
+]
+
+# ------------------------------------------------------------
+# Biblioteca alvo
+set_app_var target_library [list \
+    saed32rvt_tt1p05v25c.db \
+]
+
+# ------------------------------------------------------------
+# Link library
+# ------------------------------------------------------------
+set_app_var link_library [concat \
+    "*" \
+    $target_library \
+    [list dw_foundation.sldb] \
+]
+
+# ------------------------------------------------------------
+# Biblioteca DesignWare
+# ------------------------------------------------------------
+set_app_var synthetic_library [list \
+    dw_foundation.sldb \
+]
+
+# ------------------------------------------------------------
+# Biblioteca WORK
+# ------------------------------------------------------------
+define_design_lib WORK -path ./work
+
+# ------------------------------------------------------------
+# Configurações SystemVerilog
+# ------------------------------------------------------------
+set hdlin_enable_rtldrc_info true
+set hdlin_check_no_latch true
+set compile_autonogate true
+
+# ------------------------------------------------------------
+# Debug
+# ------------------------------------------------------------
+puts "\n=================================================="
+puts "Design Compiler Setup"
+puts "=================================================="
+
+puts "\nROOT_DIR"
+puts $ROOT_DIR
+
+puts "\nsearch_path"
+puts $search_path
+
+puts "\ntarget_library"
+puts $target_library
+
+puts "\nlink_library"
+puts $link_library
+
+puts "\nTestando acesso às bibliotecas"
+sh ls -l $ROOT_DIR/libs/
+
+puts "==================================================\n"
