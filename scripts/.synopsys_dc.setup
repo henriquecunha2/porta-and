@@ -1,10 +1,10 @@
 # ============================================================
 # Synopsys Design Compiler Setup
-# SAED32 + SystemVerilog
 # ============================================================
 
 # ------------------------------------------------------------
-# Diretório atual
+# Diretório atual de onde o dc_shell será executado
+# Pega o diretório atual "pwd"
 # ------------------------------------------------------------
 set ROOT_DIR [pwd]
 
@@ -25,6 +25,9 @@ set_app_var target_library [list \
 
 # ------------------------------------------------------------
 # Link library
+# Ela define quais bibliotecas o DC pode usar para
+# resolver referências de módulos/células durante
+# o processo de linkagem (link).
 # ------------------------------------------------------------
 set_app_var link_library [concat \
     "*" \
@@ -34,6 +37,9 @@ set_app_var link_library [concat \
 
 # ------------------------------------------------------------
 # Biblioteca DesignWare
+# A DesignWare é uma coleção de IPs e componentes
+# otimizados fornecidos pela própria Synopsys para
+# uso durante síntese e implementação digital.
 # ------------------------------------------------------------
 set_app_var synthetic_library [list \
     dw_foundation.sldb \
@@ -41,14 +47,26 @@ set_app_var synthetic_library [list \
 
 # ------------------------------------------------------------
 # Biblioteca WORK
+# É a biblioteca de trabalho onde o DC armazena
+# os designs compilados/elaborados durante a sessão.
 # ------------------------------------------------------------
 define_design_lib WORK -path ./work
 
 # ------------------------------------------------------------
 # Configurações SystemVerilog
 # ------------------------------------------------------------
+
+# Habilita mensagens mais detalhadas de
+# RTL Design Rule Checks (RTL DRC) durante
+# leitura/elaboração do RTL.
 set hdlin_enable_rtldrc_info true
+
+# Pede ao DC para verificar inferência de latches.
 set hdlin_check_no_latch true
+
+# Desabilita clock gating automático.
+# Usaremos no começo para evitar "células estranhas"
+# Depois, click gating é necessário
 set compile_autonogate true
 
 # ------------------------------------------------------------

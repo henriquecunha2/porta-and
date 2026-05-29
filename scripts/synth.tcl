@@ -7,30 +7,32 @@
 source ./scripts/.synopsys_dc.setup
 
 # 2. LEAR O ARQUIVO RTL (SYSTEMVERILOG)
-# Substitua 'meu_design.sv' pelo nome do seu arquivo SystemVerilog
 analyze -format sverilog ./rtl/porta_and.sv
 
 # 3. ELABORAR O DESIGN
-# Substitua 'meu_design_top' pelo nome do módulo top do seu design
 elaborate porta_and
 
-# 4. CARREGAR CONSTRAINTS
+# 4. LINKAR O DESIGN
+# O comando 'link' é necessário para resolver todas as referências
+# e preparar o design para a síntese
+# Pode ser suprimido para designs muito pequenoas, mas é recomendado para designs maiores
+# Não é uma boa prática retirar o comando
+link
+
+# 5. Gerar o arquivo de netlist não mapeado
+# (opcional, mas útil para depuração)
+write_file -format sverilog -hier -out porta_and_nao_mapeada.sv
+
+# 6. CARREGAR CONSTRAINTS
 read_sdc scripts/constraints.sdc
 
-# 5. ANTES DA SÍNTESE - RELATÓRIOS INICIAIS
-puts "\n============================================================"
-puts "RELATÓRIOS PRÉ-SÍNTESE"
-puts "============================================================"
-report_area -hierarchy > area_pre.rpt
-report_timing -max_paths 10 > timing_pre.rpt
-
-# 6. SÍNTESE (compile_ultra é mais agressivo que compile)
+# 7. SÍNTESE (compile_ultra é mais agressivo que compile)
 puts "\n============================================================"
 puts "INICIANDO SÍNTESE (SystemVerilog)..."
 puts "============================================================"
 compile_ultra
 
-# 7. RELATÓRIOS PÓS-SÍNTESE
+# 8. RELATÓRIOS PÓS-SÍNTESE
 puts "\n============================================================"
 puts "RELATÓRIOS PÓS-SÍNTESE"
 puts "============================================================"
@@ -40,7 +42,7 @@ report_area -hierarchy > area_pos.rpt
 puts "\n[Área] Relatório salvo em: area_pos.rpt"
 
 # Relatório de timing (setup)
-report_timing -max_paths 10 > timing_relatorio.rpt
+report_timing > timing_relatorio.rpt
 puts "[Timing] Relatório salvo em: timing_relatorio.rpt"
 
 # Relatório de power
@@ -57,24 +59,24 @@ puts "[Hold Violations] Relatório salvo em: hold_violations.rpt"
 
 # 8. EXPORTAR NETLIST
 # Formato Verilog (para simulação)
-write -format verilog -hierarchy -output meu_design_syn.sv
-puts "\n[Netlist] SystemVerilog salvo em: meu_design_syn.sv"
+write -format sverilog -hierarchy -output porta_and_mapeada.sv
+puts "\n[Netlist] SystemVerilog salvo em: porta_and_mapeada.sv"
 
 # Formato DDC (binário Synopsys, mais rápido para ICC2)
-write -format ddc -hierarchy -output meu_design_syn.ddc
-puts "[Netlist] DDC salvo em: meu_design_syn.ddc"
+write -format ddc -hierarchy -output porta_and_mapeada.ddc
+puts "[Netlist] DDC salvo em: porta_and_mapeada.ddc"
 
 # 9. SALVAR DESIGN EM MEMORY
-save_designs -force meu_design.db
-puts "[Design] Salvado em: meu_design.db"
+save_designs -force porta_and.db
+puts "[Design] Salvo em: porta_and.db"
 
 # 10. FINALIZAR
 puts "\n============================================================"
 puts "SÍNTESE CONCLUÍDA COM SUCESSO (SystemVerilog)!"
 puts "============================================================"
 puts "Arquivos gerados:"
-puts "  - meu_design_syn.sv (netlist SystemVerilog)"
-puts "  - meu_design_syn.ddc (netlist DDC)"
+puts "  - porta_and_mapeada.sv (netlist SystemVerilog)"
+puts "  - porta_and_mapeada.ddc (netlist DDC)"
 puts "  - area_pos.rpt (área)"
 puts "  - timing_relatorio.rpt (timing)"
 puts "  - power.rpt (potência)"
